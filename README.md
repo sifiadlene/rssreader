@@ -43,7 +43,7 @@ npm install
 npm run dev
 ```
 
-This starts both the Vite dev server (frontend, default port 5173) and the Express API server (backend, default port 3000) concurrently.
+This starts both the Vite dev server (frontend, default port 5173) and the Express API server (backend, default port 3001, configurable via `PORT`) concurrently.
 
 ### Build for Production
 
