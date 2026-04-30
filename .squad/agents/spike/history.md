@@ -41,4 +41,16 @@ See `docs/architecture.md` for complete details.
 
 ## Learnings
 
-_To be filled as Spike executes assigned tasks._
+- Implemented the backend foundation in `src/server/models/`, `src/server/services/`, `src/server/routes/`, `src/server/middleware/`, and `src/server/index.ts` with `better-sqlite3` tables for feeds/articles and raw SQL CRUD helpers.
+- Added shared API/domain contracts in `src/shared/types/` and kept client normalization tolerant of both wrapped (`{ feed, articles }`) and flattened feed detail payloads consumed across the app.
+- Feed ingestion now follows `parseFeed()`/`refreshFeed()` patterns in `src/server/services/feedService.ts`, including RSS parsing, article upserts by GUID fallback, and route-level JSON error handling via `src/server/middleware/errorHandler.ts`.
+- Validation now passes through `npm test`, `npm run build`, and `npm run lint`; lint support was enabled with a flat ESLint config in `eslint.config.js` plus TypeScript ESLint tooling.
+
+## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
+
+**Integration Issue:** Ed's test suite (24/28 passing) reports 4 failures on API contract mismatches. Likely causes:
+- Backend payload structure differs from test expectations (especially feed detail responses with wrapped vs. flattened payloads)
+- Field naming inconsistency between API responses and shared types contract
+- Possible async timing or error response handling differences
+
+**Action:** Consult Ed's failing test output in `src/server/__tests__/` and `src/client/__tests__/` to identify exact mismatches. Verify API responses match the schema defined in `src/shared/types/index.ts` and test contracts.

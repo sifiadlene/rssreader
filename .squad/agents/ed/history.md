@@ -41,4 +41,22 @@ See `docs/architecture.md` for complete details.
 
 ## Learnings
 
-_To be filled as Ed executes assigned tasks._
+- 2026-04-30T00:26:03.781+00:00 — Established contract-first Vitest coverage across `src/server/__tests__/` and `src/client/__tests__/` so implementation can land against stable test targets.
+- Backend tests favor in-memory SQLite expectations, mocked `rss-parser`, and route-level Supertest coverage to isolate parsing, persistence, and HTTP behavior.
+- Frontend tests lock in API client request shapes and minimal render contracts for `Header`, `FeedCard`, and `ArticleItem` without over-specifying styling details.
+
+## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
+
+**Test Failure Context:** 4 tests failing on API contract mismatches. Spike's backend implementation completed successfully (build/lint/tests all pass on his end), but API response structure differs from test expectations in Ed's test suite.
+
+**Backend Implementation Summary (from Spike):**
+- Feed ingestion uses `parseFeed()`/`refreshFeed()` patterns in `src/server/services/feedService.ts`
+- Article upserts by GUID fallback; route-level JSON error handling via `src/server/middleware/errorHandler.ts`
+- Client normalization layer in `src/client/services/api.ts` tolerates both wrapped (`{ feed, articles }`) and flattened feed detail payloads
+
+**Investigation Required:**
+- Check if Spike's wrapped/flattened payload logic matches test expectations
+- Verify field naming (camelCase vs. snake_case) in API responses vs. test mocks
+- Ensure error response structure matches test assertions
+
+**Note:** Faye's frontend successfully consumes Spike's API via the normalization layer, so actual integration may be working despite test mismatches.
