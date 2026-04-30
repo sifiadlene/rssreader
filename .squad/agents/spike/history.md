@@ -45,6 +45,11 @@ See `docs/architecture.md` for complete details.
 - Added shared API/domain contracts in `src/shared/types/` and kept client normalization tolerant of both wrapped (`{ feed, articles }`) and flattened feed detail payloads consumed across the app.
 - Feed ingestion now follows `parseFeed()`/`refreshFeed()` patterns in `src/server/services/feedService.ts`, including RSS parsing, article upserts by GUID fallback, and route-level JSON error handling via `src/server/middleware/errorHandler.ts`.
 - Validation now passes through `npm test`, `npm run build`, and `npm run lint`; lint support was enabled with a flat ESLint config in `eslint.config.js` plus TypeScript ESLint tooling.
+- Unified `src/server/app.ts` and `src/server/routes/feedRoutes.ts` so test and runtime traffic now share the same handlers, preventing API drift between the Express app entrypoint and the mounted router.
+- Standardized feed detail responses to include both top-level feed fields and a nested `feed` object alongside `articles`, which keeps backend route tests and frontend hooks compatible with the same payload.
+- 2026-04-30T01:02:12.403+00:00 — External feed discovery now combines direct feed parsing, HTML `<link rel="alternate">` auto-discovery, and common RSS path probing in `src/server/services/feedDiscoveryService.ts`, while keyword searches use a free no-key web search bootstrap before site-level discovery.
+- 2026-04-30T01:02:12.403+00:00 — The `GET /api/search` contract stayed as a plain `SearchResult[]`, so frontend consumers only needed UX copy/loading updates instead of payload changes.
+- 2026-04-30T01:02:12.403+00:00 — External discovery is timeout-bounded and best-effort; public search/bootstrap services can fail or throttle, so the backend degrades to empty results instead of surfacing transport errors for normal misses.
 
 ## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
 
