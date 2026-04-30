@@ -41,4 +41,17 @@ See `docs/architecture.md` for complete details.
 
 ## Learnings
 
-_To be filled as Faye executes assigned tasks._
+- 2026-04-30T00:26:03.781+00:00 — Built the React shell in `src/client/` with route-driven pages (`FeedListPage`, `FeedSearchPage`, `FeedDetailPage`) and reusable UI in `src/client/components/` so composition stays page-first and presentation stays modular.
+- 2026-04-30T00:26:03.781+00:00 — Centralized fetch logic in `src/client/services/api.ts` and async state in `src/client/hooks/` (`useFeeds`, `useFeed`, `useSearch`) to keep rendering components simple.
+- 2026-04-30T00:26:03.781+00:00 — Kept all frontend styling in `src/client/styles.css`, using responsive cards, stacked mobile layouts, and shared button/status primitives for a minimal interface.
+
+## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
+
+**API Contract Resolved:** Spike fixed API contract mismatches. All 28 tests now pass, build clean, lint clean.
+
+**Contract Standardization:**
+- `POST /api/feeds`, `GET /api/feeds/:id`, `POST /api/feeds/:id/refresh` now return consistent shape with both top-level feed fields and nested `feed` object with `articles`
+- `GET /api/feeds` and `GET /api/search` remain array responses
+- Single router implementation ensures client and server contracts stay synchronized
+
+**Stability:** API response shape is now stable. Frontend hooks (`useFeed`, `useFeeds`) can safely rely on `detail.feed` and `detail.articles`.

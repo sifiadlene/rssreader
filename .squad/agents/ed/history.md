@@ -47,16 +47,11 @@ See `docs/architecture.md` for complete details.
 
 ## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
 
-**Test Failure Context:** 4 tests failing on API contract mismatches. Spike's backend implementation completed successfully (build/lint/tests all pass on his end), but API response structure differs from test expectations in Ed's test suite.
+**API Contract Resolved:** Spike fixed API contract mismatches. All 28 tests now pass, build clean, lint clean.
 
-**Backend Implementation Summary (from Spike):**
-- Feed ingestion uses `parseFeed()`/`refreshFeed()` patterns in `src/server/services/feedService.ts`
-- Article upserts by GUID fallback; route-level JSON error handling via `src/server/middleware/errorHandler.ts`
-- Client normalization layer in `src/client/services/api.ts` tolerates both wrapped (`{ feed, articles }`) and flattened feed detail payloads
+**Contract Standardization:**
+- `POST /api/feeds`, `GET /api/feeds/:id`, `POST /api/feeds/:id/refresh` now return consistent shape with both top-level feed fields and nested `feed` object with `articles`
+- `GET /api/feeds` and `GET /api/search` remain array responses
+- Single router implementation ensures client and server contracts stay synchronized
 
-**Investigation Required:**
-- Check if Spike's wrapped/flattened payload logic matches test expectations
-- Verify field naming (camelCase vs. snake_case) in API responses vs. test mocks
-- Ensure error response structure matches test assertions
-
-**Note:** Faye's frontend successfully consumes Spike's API via the normalization layer, so actual integration may be working despite test mismatches.
+**Stability:** API response shape is now stable. Route tests and Ed's test suite expectations are now aligned. Backend implementation and frontend hooks can work with confidence.

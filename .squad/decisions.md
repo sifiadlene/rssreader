@@ -37,6 +37,29 @@ Adlene requested the initial architecture definition for the RSS Reader applicat
 - Backend agents work in `src/server/`, frontend agents in `src/client/`, shared types in `src/shared/`
 - Database schema changes must be documented in the architecture doc
 
+### Decision: Feed API Contract Standardization
+
+**Date:** 2026-04-30
+**Author:** Spike
+**Status:** Accepted
+**Scope:** Feed API response shape and route wiring
+
+#### Context
+Frontend feed-detail hooks consume `detail.feed` and `detail.articles`. Existing backend route implementations had drifted: `src/server/app.ts` and `src/server/routes/feedRoutes.ts` returned different payload shapes and status codes. That drift made it easy for client and server expectations to diverge again.
+
+#### Decisions
+
+1. **Standardize response shape** — `POST /api/feeds`, `GET /api/feeds/:id`, and `POST /api/feeds/:id/refresh` return both top-level feed fields and a nested `feed` object with `articles`.
+
+2. **Keep array endpoints consistent** — `GET /api/feeds` and `GET /api/search` remain as array responses.
+
+3. **Single source of truth** — Route all runtime and test traffic through the same router implementation so contracts stay synchronized.
+
+#### Consequences
+- Frontend hooks can safely rely on `detail.feed`.
+- Existing backend callers and route tests that read top-level feed fields continue to work.
+- Future contract changes must be made once in `src/server/routes/feedRoutes.ts` and reflected in `src/shared/types/api.ts`.
+
 ## Governance
 
 - All meaningful changes require team consensus
