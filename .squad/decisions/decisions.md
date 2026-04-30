@@ -64,3 +64,39 @@ The repo had architecture only, so the initial test suite needed to define imple
 Implementers can build against stable test targets immediately, and the suite can grow without reorganizing the contract surface later.
 
 ---
+
+## Decision: Improvement Audit Priority Roadmap
+
+**Date:** 2026-04-30
+**Author:** Jet
+**Status:** Proposed for team review
+
+### Context
+Full architectural and code quality audit requested by Adlene identified critical improvements across security, data integrity, product completeness, and developer experience.
+
+### Recommended Priority Order
+
+1. **P0 Security first**
+   - Replace permissive `cors()` with explicit origin allowlist.
+   - Add centralized URL sanitization/validation for all feed, article, site, and image URLs.
+   - Add SSRF protections in feed fetch/discovery: only `http:`/`https:`, reject localhost/private IPs, stop following unsafe redirects, and add regression tests.
+   - Add request body size limits and security headers (`helmet`).
+
+2. **P1 Data integrity and architecture cleanup**
+   - Fix `createArticle` duplicate path (`INSERT OR IGNORE` + `lastInsertRowid`).
+   - Wrap subscribe/create race paths and unique-constraint cases in explicit domain errors.
+   - Route backend reads/writes consistently through the service layer instead of mixing routes with models.
+   - Remove `Record<string, unknown>` dynamic fallbacks in `feedService` and restore typed imports.
+
+3. **P2 Product and UX completeness**
+   - Expose unsubscribe and mark-as-read in the UI and API.
+   - Add request cancellation for feed/detail/search hooks and clearer stale-data handling.
+   - Add pagination / incremental loading for feeds with large article histories.
+   - Add schema validation for API payloads on both server and client normalization boundaries.
+
+4. **P3 Developer experience**
+   - Add CI for `npm run lint`, `npm test`, `npm run build`, and dependency/security checks.
+   - Split the monolithic stylesheet if frontend scope keeps growing.
+   - Update `docs/architecture.md` so it no longer advertises unimplemented capabilities like interval refresh and mark-as-read routes.
+
+---

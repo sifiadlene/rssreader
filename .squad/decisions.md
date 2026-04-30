@@ -112,6 +112,46 @@ Adlene requested a significant visual refresh for the RSS Reader frontend so the
 - Frontend keeps current result contract while gaining clearer discovery messaging.
 - Discovery quality can improve later without API contract changes.
 
+### Decision: Code Review Priorities and Security Remediation Plan
+
+**Date:** 2026-04-30
+**Author:** Jet (Lead)
+**Status:** Proposed
+**Scope:** Frontend (React) + Backend (Express/SQLite)
+
+#### Context
+A comprehensive code review identified 13 valid findings: 5 frontend, 8 backend. Findings span security vulnerabilities (CORS, SSRF, XSS), data integrity bugs (race conditions, unique constraint handling), and UX/scalability issues. This decision establishes remediation priority and team assignments.
+
+#### Decisions
+
+1. **Four-tier priority system (P0–P3)**
+   - P0 (Critical Security): CORS misconfiguration, SSRF, unvalidated URLs—block all feature work
+   - P1 (Data Integrity): Race conditions, constraint violations—must fix before next release
+   - P2 (Frontend UX/Stability): Error boundaries, race conditions in hooks, memory leaks
+   - P3 (Scalability): Pagination, rate limiting—plan but do not block current work
+
+2. **Security-first remediation rules**
+   - CORS: Explicit whitelist of allowed origins (localhost:5173 dev, production domain prod)
+   - SSRF: Validate all external URLs; reject localhost, private IPs (10.*, 172.16-31.*, 192.168.*, 169.254.*), and non-HTTP/HTTPS schemes
+   - URLs: Helper `sanitizeUrl()` that accepts only `http:` and `https:` schemes; block `data:`, `javascript:`, `vbscript:`
+
+3. **Data integrity fixes**
+   - B3 (createArticle): Check `result.changes` after `INSERT OR IGNORE`; if 0, SELECT to retrieve existing row
+   - B4 (subscribeToFeed): Wrap duplicate check + insert in transaction; catch UNIQUE constraint and return 409
+   - B5 (updateFeed): Try/catch URL updates; detect `SQLITE_CONSTRAINT_UNIQUE`, return 409
+
+4. **Frontend race condition prevention**
+   - F2/F3 (useFeed, useSearch): Use `AbortController` to cancel prior requests; add 300ms debounce to search
+
+5. **No dedicated QA agent**—Instead, extend Ed's charter to include security review (SSRF, CORS, XSS, injection patterns) on all API routes and URL-displaying components. A checklist and Ed's existing expertise suffice; a separate agent adds coordination overhead without clear value.
+
+#### Consequences
+- Spike leads P0–P3 backend fixes; Faye leads P2 frontend work
+- Ed's charter expands immediately to security review on all PRs
+- Jet approves all P0 and P1 merges before landing
+- No new features start until P0 (B1, B2, F5) are resolved
+- Each priority tier requires Ed's validation before merge
+
 ## Governance
 
 - All meaningful changes require team consensus
