@@ -60,6 +60,58 @@ Frontend feed-detail hooks consume `detail.feed` and `detail.articles`. Existing
 - Existing backend callers and route tests that read top-level feed fields continue to work.
 - Future contract changes must be made once in `src/server/routes/feedRoutes.ts` and reflected in `src/shared/types/api.ts`.
 
+### Decision: Frontend Design System Foundation
+
+**Date:** 2026-04-30
+**Author:** Faye
+**Status:** Accepted
+**Scope:** `src/client/`
+
+#### Context
+Adlene requested a significant visual refresh for the RSS Reader frontend so the product feels polished, modern, and professional without changing backend contracts.
+
+#### Decisions
+
+1. **Token-based CSS design system** — Adopt custom properties in `src/client/styles.css` for brand colors, surfaces, text, borders, semantic states, spacing, radius, and shadows.
+
+2. **Dark-mode-ready theme** — Define default token set in `:root` and override with `prefers-color-scheme: dark`.
+
+3. **Standardized presentation** — Hero surfaces, feed avatars, pill metadata, consistent buttons, skeleton loaders, friendly empty/error states.
+
+#### Consequences
+- Future frontend work reuses shared CSS variables and component patterns.
+- New components support focus-visible states, responsive behavior, and semantic status styling by default.
+- Larger frontend additions can layer on the existing theme without renegotiating API shapes.
+
+### Decision: External Feed Discovery Service
+
+**Date:** 2026-04-30
+**Author:** Spike
+**Status:** Accepted
+**Scope:** Feed search and discovery
+
+#### Context
+`GET /api/search?q=` only handled direct/local-style matches and did not discover feeds from arbitrary websites or topic searches.
+
+#### Decisions
+
+1. **Keep existing search contract** — `GET /api/search` returns the same `SearchResult[]` shape.
+
+2. **Add feedDiscoveryService layer** — New `src/server/services/feedDiscoveryService.ts` as the backend discovery engine.
+
+3. **Tiered discovery strategy:**
+   - Direct RSS/Atom parse when query is a feed URL
+   - Website HTML auto-discovery via `<link rel="alternate" type="application/rss+xml|application/atom+xml">`
+   - Common feed-path probing: `/feed`, `/rss`, `/rss.xml`, `/feed.xml`, `/atom.xml`
+   - Keyword bootstrap via free web search, then run site discovery on returned sites
+
+4. **Best-effort treatment** — External discovery has short timeouts and empty-result fallbacks; ordinary misses do not become API failures.
+
+#### Consequences
+- Backend search performs real external discovery without paid services or API keys.
+- Frontend keeps current result contract while gaining clearer discovery messaging.
+- Discovery quality can improve later without API contract changes.
+
 ## Governance
 
 - All meaningful changes require team consensus

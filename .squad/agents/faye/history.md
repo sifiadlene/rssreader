@@ -44,6 +44,9 @@ See `docs/architecture.md` for complete details.
 - 2026-04-30T00:26:03.781+00:00 — Built the React shell in `src/client/` with route-driven pages (`FeedListPage`, `FeedSearchPage`, `FeedDetailPage`) and reusable UI in `src/client/components/` so composition stays page-first and presentation stays modular.
 - 2026-04-30T00:26:03.781+00:00 — Centralized fetch logic in `src/client/services/api.ts` and async state in `src/client/hooks/` (`useFeeds`, `useFeed`, `useSearch`) to keep rendering components simple.
 - 2026-04-30T00:26:03.781+00:00 — Kept all frontend styling in `src/client/styles.css`, using responsive cards, stacked mobile layouts, and shared button/status primitives for a minimal interface.
+- 2026-04-30T00:47:58.833+00:00 — Rebuilt the client design system around CSS variables for primary/secondary/accent colors, surface layers, semantic states, spacing, radius, and shadow tokens so the app now has a polished light theme with a dark-mode-ready foundation.
+- 2026-04-30T00:47:58.833+00:00 — Standardized feed presentation with avatar-based cards, glassy hero panels, pill metadata, shimmer skeletons, and stronger button/focus states across `Header`, `FeedCard`, `FeedPreview`, `SearchBar`, `ArticleItem`, and page-level empty/error states.
+- 2026-04-30T00:47:58.833+00:00 — Added responsive frontend patterns including a collapsible mobile nav, adaptive action groups, and clearer article read/unread styling so the UI feels professional from phone to desktop without changing API contracts.
 
 ## Cross-Agent Notes (from Scribe, 2026-04-30T00:26:03.781Z)
 
@@ -55,3 +58,5 @@ See `docs/architecture.md` for complete details.
 - Single router implementation ensures client and server contracts stay synchronized
 
 **Stability:** API response shape is now stable. Frontend hooks (`useFeed`, `useFeeds`) can safely rely on `detail.feed` and `detail.articles`.
+
+**External Feed Discovery (2026-04-30T01:02:12.403Z):** Spike shipped feedDiscoveryService with 4 discovery strategies (direct URL, HTML auto-discovery, common paths, web search). Search API now supports external discovery. Frontend search UX updated with clearer discovery messaging. All 31 tests pass. You may need to adjust frontend messaging or styling if discovery results differ from local-only results.
