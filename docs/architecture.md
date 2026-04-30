@@ -47,8 +47,9 @@ rssreader/
 │   │   ├── services/        # Business logic (feed parsing, search)
 │   │   ├── models/          # Database access layer
 │   │   └── middleware/      # Express middleware (error handling, etc.)
-│   └── shared/              # Shared types/interfaces
-│       └── types/           # TypeScript interfaces used by both sides
+│   ├── shared/              # Shared types/interfaces
+│   │   └── types/           # TypeScript interfaces used by both sides
+│   └── test/                # Shared test fixtures and setup
 ├── package.json
 ├── tsconfig.json
 └── vite.config.ts
