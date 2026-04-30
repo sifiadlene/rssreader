@@ -1,0 +1,16 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "Cowboy Bebop",
+      "used_at": "2026-04-30T00:11:19Z",
+      "assignment_id": "rssreader-init-001"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "rssreader-init-001": {
+      "universe": "Cowboy Bebop",
+      "agents": ["Jet", "Faye", "Spike", "Ed"],
+      "created_at": "2026-04-30T00:11:19Z"
+    }
+  }
+}

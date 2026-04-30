@@ -1,0 +1,36 @@
+{
+  "agents": {
+    "jet": {
+      "persistent_name": "Jet",
+      "universe": "Cowboy Bebop",
+      "role": "Lead",
+      "created_at": "2026-04-30T00:11:19Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "faye": {
+      "persistent_name": "Faye",
+      "universe": "Cowboy Bebop",
+      "role": "Frontend Dev",
+      "created_at": "2026-04-30T00:11:19Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "spike": {
+      "persistent_name": "Spike",
+      "universe": "Cowboy Bebop",
+      "role": "Backend Dev",
+      "created_at": "2026-04-30T00:11:19Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "ed": {
+      "persistent_name": "Ed",
+      "universe": "Cowboy Bebop",
+      "role": "Tester",
+      "created_at": "2026-04-30T00:11:19Z",
+      "legacy_named": false,
+      "status": "active"
+    }
+  }
+}
