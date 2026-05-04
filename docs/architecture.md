@@ -104,8 +104,12 @@ rssreader/
 
 - **FeedService** — Core business logic:
   - `parseFeed(url)` — Fetch and parse an RSS feed URL using `rss-parser`
-  - `searchFeeds(query)` — Discover feeds (can query external search APIs or attempt URL parsing)
-  - `refreshFeed(id)` — Re-fetch a stored feed and update articles
+  - `searchFeeds(query)` — Delegate feed discovery to `FeedDiscoveryService`
+  - `subscribeToFeed(url)` — Parse a feed and persist it with initial articles
+  - `refreshFeed(id)` — Re-fetch a stored feed and upsert new articles
+- **FeedDiscoveryService** — Feed discovery logic:
+  - If the query looks like a URL, tries to parse it directly as a feed; falls back to scraping the page for `<link rel="alternate">` tags and common feed paths (`/feed`, `/rss`, etc.)
+  - If the query is a keyword, queries DuckDuckGo HTML, extracts result URLs, and probes each site for feeds
 - **ArticleService** — Article-level operations:
   - `getArticles(feedId)` — Retrieve stored articles for a feed
   - `markAsRead(articleId)` — Mark an article as read
